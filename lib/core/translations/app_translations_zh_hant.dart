@@ -1,7 +1,7 @@
 /// 繁体中文翻译
 class AppTranslationsZhHant {
   static const Map<String, String> translations = {
-    'appName': '我的AI口袋',
+    'appName': 'AI',
     'welcome': '歡迎使用記帳應用',
     'addTransaction': '新增記帳',
     'settings': '設定',

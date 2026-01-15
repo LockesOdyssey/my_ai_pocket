@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../core/translations/app_translations.dart';
-import '../../core/routes/app_pages.dart';
-import '../../core/routes/app_routes.dart';
+import 'core/translations/app_translations.dart';
+import 'core/routes/app_pages.dart';
+import 'core/routes/app_routes.dart';
+import 'core/theme/theme_controller.dart';
 
 void main() {
+  // 初始化主题控制器
+  Get.put(ThemeController(), permanent: true);
+  
   runApp(const MyApp());
 }
 
@@ -13,7 +17,9 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(
+    final themeController = Get.find<ThemeController>();
+    
+    return Obx(() => GetMaterialApp(
       title: '我的AI口袋',
       debugShowCheckedModeBanner: false,
       
@@ -27,10 +33,9 @@ class MyApp extends StatelessWidget {
       getPages: AppPages.routes,
       
       // 主题配置
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-    );
+      theme: themeController.lightTheme,
+      darkTheme: themeController.darkTheme,
+      themeMode: themeController.themeMode,
+    ));
   }
 }

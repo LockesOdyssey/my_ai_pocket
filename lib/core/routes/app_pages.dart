@@ -12,12 +12,12 @@ import '../../pages/tabs/settings/settings_controller.dart';
 /// 应用路由页面配置
 class AppPages {
   static final List<GetPage> routes = [
-    // 启动页
     GetPage(
       name: AppRoutes.splash,
       page: () => const SplashPage(),
       binding: BindingsBuilder(() {
-        Get.lazyPut<SplashController>(() => SplashController());
+        // 使用 put 而不是 lazyPut，确保控制器立即创建并触发 onReady
+        Get.put<SplashController>(SplashController());
       }),
     ),
     
@@ -26,6 +26,14 @@ class AppPages {
       name: AppRoutes.main,
       page: () => const MainPage(),
       binding: BindingsBuilder(() {
+        // 先注册子页面控制器（使用 put 确保立即创建，因为 MainController 会立即使用它们）
+        if (!Get.isRegistered<HomeController>()) {
+          Get.put<HomeController>(HomeController(), permanent: false);
+        }
+        if (!Get.isRegistered<SettingsController>()) {
+          Get.put<SettingsController>(SettingsController(), permanent: false);
+        }
+        // 然后注册 MainController
         Get.lazyPut<MainController>(() => MainController());
       }),
     ),

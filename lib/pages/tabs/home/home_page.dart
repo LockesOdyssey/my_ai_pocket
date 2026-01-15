@@ -13,7 +13,7 @@ class HomePage extends GetView<HomeController> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('home'.tr)),
-      body: Obx(() => const Center(child: Text('首页内容待开发'))),
+      body: const Center(child: Text('首页内容待开发')),
     );
   }
 }
