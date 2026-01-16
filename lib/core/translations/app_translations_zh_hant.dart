@@ -21,5 +21,9 @@ class AppTranslationsZhHant {
     'expense': '支出',
     'home': '首頁',
     'switchLanguage': '切換語言',
+    'switchTheme': '切換主題',
+    'darkMode': '深色模式',
+    'lightMode': '淺色模式',
+    'systemMode': '跟隨系統',
   };
 }

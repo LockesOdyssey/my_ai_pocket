@@ -15,14 +15,25 @@ class SettingsPage extends GetView<SettingsController> {
       appBar: AppBar(
         title: Text('settings'.tr),
       ),
-      body: ListView(
+      body: Obx(() => ListView(
         children: [
           // 切换语言
           ListTile(
             leading: const Icon(Icons.language),
             title: Text('switchLanguage'.tr),
+            subtitle: Text(controller.getCurrentLanguageText()),
             trailing: const Icon(Icons.chevron_right),
             onTap: controller.switchLanguage,
+          ),
+          const Divider(),
+
+          // 切换主题
+          ListTile(
+            leading: const Icon(Icons.palette),
+            title: Text('switchTheme'.tr),
+            subtitle: Text(controller.getCurrentThemeText()),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: controller.switchTheme,
           ),
           const Divider(),
 
@@ -34,7 +45,7 @@ class SettingsPage extends GetView<SettingsController> {
             onTap: controller.showAbout,
           ),
         ],
-      ),
+      )),
     );
   }
 }

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 class AppColors {
   AppColors._();
 
-  // 用户提供的颜色
+  // 应用配色
   static const Color color0B1C2D = Color(0xFF0B1C2D); // 深蓝黑色
   static const Color color00475D = Color(0xFF00475D); // 深青色
   static const Color color00767D = Color(0xFF00767D); // 青绿色 - 选为主题色

@@ -21,5 +21,9 @@ class AppTranslationsEn {
     'expense': 'Expense',
     'home': 'Home',
     'switchLanguage': 'Switch Language',
+    'switchTheme': 'Switch Theme',
+    'darkMode': 'Dark Mode',
+    'lightMode': 'Light Mode',
+    'systemMode': 'Follow System',
   };
 }

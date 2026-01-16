@@ -21,5 +21,9 @@ class AppTranslationsZh {
     'expense': '支出',
     'home': '首页',
     'switchLanguage': '切换语言',
+    'switchTheme': '切换主题',
+    'darkMode': '深色模式',
+    'lightMode': '浅色模式',
+    'systemMode': '跟随系统',
   };
 }

@@ -15,11 +15,12 @@ class ThemeState {
   ThemeState() : themeMode = AppThemeMode.system.obs;
 
   /// 是否为深色模式
+  /// 注意：当为 system 模式时，此方法无法准确判断，需要使用 ThemeHelper.isDarkMode(BuildContext)
   bool get isDarkMode {
     if (themeMode.value == AppThemeMode.dark) return true;
     if (themeMode.value == AppThemeMode.light) return false;
-    // 跟随系统时，需要根据系统设置判断（这里简化处理，默认返回false）
-    // 实际使用时可以通过 MediaQuery.platformBrightnessOf(context) 获取
+    // system 模式需要 context 才能准确判断，这里返回 false 作为默认值
+    // 实际使用时应该通过 ThemeHelper.isDarkMode(context) 获取
     return false;
   }
 }
