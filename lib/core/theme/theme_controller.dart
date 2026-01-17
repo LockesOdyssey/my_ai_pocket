@@ -128,6 +128,13 @@ class ThemeController extends GetxController {
         backgroundColor: colors.primary,
         foregroundColor: Colors.white,
       ),
+      bottomNavigationBarTheme: BottomNavigationBarThemeData(
+        backgroundColor: colors.background,
+        selectedItemColor: colors.primary,
+        unselectedItemColor: colors.textSecondary,
+        selectedLabelStyle: TextStyle(color: colors.primary),
+        unselectedLabelStyle: TextStyle(color: colors.textSecondary),
+      ),
     );
   }
 
@@ -192,6 +199,13 @@ class ThemeController extends GetxController {
       floatingActionButtonTheme: FloatingActionButtonThemeData(
         backgroundColor: colors.primary,
         foregroundColor: Colors.white,
+      ),
+      bottomNavigationBarTheme: BottomNavigationBarThemeData(
+        backgroundColor: colors.background,
+        selectedItemColor: colors.primary,
+        unselectedItemColor: colors.textSecondary,
+        selectedLabelStyle: TextStyle(color: colors.primary),
+        unselectedLabelStyle: TextStyle(color: colors.textSecondary),
       ),
     );
   }

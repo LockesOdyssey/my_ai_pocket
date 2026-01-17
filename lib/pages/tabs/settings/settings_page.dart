@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:my_ai_pocket/core/theme/app_text_styles.dart';
+import 'package:my_ai_pocket/core/theme/theme_helper.dart';
+import 'package:my_ai_pocket/core/theme/app_colors.dart';
 import 'settings_controller.dart';
 
 /// 设置页面
@@ -11,6 +14,17 @@ class SettingsPage extends GetView<SettingsController> {
 
   @override
   Widget build(BuildContext context) {
+    // 使用全局文本样式，并调整为三级文字颜色（与底部 tab 保持一致）
+    final titleStyle = AppTextStyles.withColor(
+      AppTextStyles.bodyMedium,
+      ThemeHelper.textTertiaryColor,
+    );
+    final subtitleStyle = AppTextStyles.withColor(
+      AppTextStyles.bodySmall,
+      ThemeHelper.textTertiaryColor,
+    );
+    final iconColor = ThemeHelper.textTertiaryColor;
+
     return Scaffold(
       appBar: AppBar(
         title: Text('settings'.tr),
@@ -19,29 +33,44 @@ class SettingsPage extends GetView<SettingsController> {
         children: [
           // 切换语言
           ListTile(
-            leading: const Icon(Icons.language),
-            title: Text('switchLanguage'.tr),
-            subtitle: Text(controller.getCurrentLanguageText()),
-            trailing: const Icon(Icons.chevron_right),
+            leading: Icon(Icons.language, color: iconColor),
+            title: Text(
+              'switchLanguage'.tr,
+              style: titleStyle,
+            ),
+            subtitle: Text(
+              controller.getCurrentLanguageText(),
+              style: subtitleStyle,
+            ),
+            trailing: Icon(Icons.chevron_right, color: iconColor),
             onTap: controller.switchLanguage,
           ),
-          const Divider(),
+          Divider(color: ThemeHelper.dividerColor,),
 
           // 切换主题
           ListTile(
-            leading: const Icon(Icons.palette),
-            title: Text('switchTheme'.tr),
-            subtitle: Text(controller.getCurrentThemeText()),
-            trailing: const Icon(Icons.chevron_right),
+            leading: Icon(Icons.palette, color: iconColor),
+            title: Text(
+              'switchTheme'.tr,
+              style: titleStyle,
+            ),
+            subtitle: Text(
+              controller.getCurrentThemeText(),
+              style: subtitleStyle,
+            ),
+            trailing: Icon(Icons.chevron_right, color: iconColor),
             onTap: controller.switchTheme,
           ),
-          const Divider(),
+          Divider(color: ThemeHelper.dividerColor,),
 
           // 关于
           ListTile(
-            leading: const Icon(Icons.info),
-            title: Text('about'.tr),
-            trailing: const Icon(Icons.chevron_right),
+            leading: Icon(Icons.info, color: iconColor),
+            title: Text(
+              'about'.tr,
+              style: titleStyle,
+            ),
+            trailing: Icon(Icons.chevron_right, color: iconColor),
             onTap: controller.showAbout,
           ),
         ],
