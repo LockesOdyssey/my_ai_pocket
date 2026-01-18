@@ -1,7 +1,7 @@
 /// 简体中文翻译
 class AppTranslationsZh {
   static const Map<String, String> translations = {
-    'appName': 'AI',
+    'appName': 'Pocket',
     'welcome': '欢迎使用记账应用',
     'addTransaction': '添加记账',
     'settings': '设置',

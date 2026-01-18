@@ -11,4 +11,7 @@ class AppRoutes {
   
   // 设置页
   static const String settings = '/settings';
+  
+  // 新增账单页
+  static const String addBill = '/addBill';
 }

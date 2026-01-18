@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'core/translations/app_translations.dart';
 import 'core/routes/app_pages.dart';
 import 'core/routes/app_routes.dart';
 import 'core/theme/theme_controller.dart';
 import 'core/language/language_controller.dart';
+import 'core/database/app_database.dart';
 
 void main() {
   // 初始化主题控制器
   Get.put(ThemeController(), permanent: true);
   // 初始化语言控制器
   Get.put(LanguageController(), permanent: true);
+  // 初始化数据库（使用 permanent: true 确保数据库实例在整个应用生命周期中保持）
+  Get.put(AppDatabase(), permanent: true);
   
   runApp(const MyApp());
 }
@@ -40,6 +44,16 @@ class MyApp extends StatelessWidget {
       theme: themeController.lightTheme,
       darkTheme: themeController.darkTheme,
       themeMode: themeController.themeMode,
+      
+      // ScreenUtil 初始化
+      builder: (context, child) {
+        return ScreenUtilInit(
+          designSize: const Size(375, 812), // 设计稿尺寸（iPhone X 标准尺寸）
+          minTextAdapt: true, // 是否根据宽度/高度中的最小值适配文字
+          splitScreenMode: true, // 支持分屏尺寸
+          child: child!,
+        );
+      },
     ));
   }
 }

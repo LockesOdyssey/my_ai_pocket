@@ -107,7 +107,7 @@ class ThemeController extends GetxController {
         foregroundColor: Colors.white,
         elevation: 0,
       ),
-      cardTheme: CardTheme(
+      cardTheme: CardThemeData(
         color: colors.card,
         elevation: 2,
         shape: RoundedRectangleBorder(
@@ -179,7 +179,7 @@ class ThemeController extends GetxController {
         foregroundColor: colors.textPrimary,
         elevation: 0,
       ),
-      cardTheme: CardTheme(
+      cardTheme: CardThemeData(
         color: colors.card,
         elevation: 2,
         shape: RoundedRectangleBorder(

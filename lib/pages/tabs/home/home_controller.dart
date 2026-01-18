@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:my_ai_pocket/core/routes/app_routes.dart';
 import 'home_state.dart';
 
 /// 首页控制器
@@ -21,6 +22,11 @@ class HomeController extends GetxController {
   void onClose() {
     // 清理资源
     super.onClose();
+  }
+
+  /// 跳转添加账单
+  void addBillEvent() {
+    Get.toNamed(AppRoutes.addBill);
   }
 
   // 在这里添加首页的业务逻辑方法

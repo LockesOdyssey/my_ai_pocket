@@ -8,6 +8,8 @@ import '../../pages/tabs/home/home_page.dart';
 import '../../pages/tabs/home/home_controller.dart';
 import '../../pages/tabs/settings/settings_page.dart';
 import '../../pages/tabs/settings/settings_controller.dart';
+import '../../pages/bill/add_bill_page.dart';
+import '../../pages/bill/add_bill_controller.dart';
 
 /// 应用路由页面配置
 class AppPages {
@@ -20,7 +22,7 @@ class AppPages {
         Get.put<SplashController>(SplashController());
       }),
     ),
-    
+
     // 主页面（带TabBar）
     GetPage(
       name: AppRoutes.main,
@@ -37,7 +39,7 @@ class AppPages {
         Get.lazyPut<MainController>(() => MainController());
       }),
     ),
-    
+
     // 首页
     GetPage(
       name: AppRoutes.home,
@@ -46,13 +48,22 @@ class AppPages {
         Get.lazyPut<HomeController>(() => HomeController());
       }),
     ),
-    
+
     // 设置页
     GetPage(
       name: AppRoutes.settings,
       page: () => const SettingsPage(),
       binding: BindingsBuilder(() {
         Get.lazyPut<SettingsController>(() => SettingsController());
+      }),
+    ),
+
+    // 新增账单页
+    GetPage(
+      name: AppRoutes.addBill,
+      page: () => const AddBillPage(),
+      binding: BindingsBuilder(() {
+        Get.lazyPut<AddBillController>(() => AddBillController());
       }),
     ),
   ];

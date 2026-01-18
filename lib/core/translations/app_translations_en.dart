@@ -1,7 +1,7 @@
 /// 英文翻译
 class AppTranslationsEn {
   static const Map<String, String> translations = {
-    'appName': 'My AI Pocket',
+    'appName': 'Pocket',
     'welcome': 'Welcome to Accounting App',
     'addTransaction': 'Add Transaction',
     'settings': 'Settings',
