@@ -18,11 +18,14 @@ class SettingsController extends GetxController {
   void onInit() {
     super.onInit();
     // 初始化逻辑
+    // 注意：配置保存由 ThemeController 和 LanguageController 内部处理
   }
 
   /// 切换语言（按简体中文 -> 繁体中文 -> 英文的顺序轮流切换）
+  /// 配置会自动保存到数据库
   void switchLanguage() {
     languageController.switchLanguage();
+    // 语言控制器内部已经保存配置，这里不需要额外操作
   }
 
   /// 获取当前语言文本
@@ -31,6 +34,7 @@ class SettingsController extends GetxController {
   }
 
   /// 切换主题（按深色模式 -> 浅色模式 -> 跟随系统的顺序轮流切换）
+  /// 配置会自动保存到数据库
   void switchTheme() {
     final currentMode = themeController.state.themeMode.value;
     
@@ -48,6 +52,7 @@ class SettingsController extends GetxController {
         themeController.setDarkMode();
         break;
     }
+    // 主题控制器内部已经保存配置，这里不需要额外操作
   }
 
   /// 获取当前主题模式文本（使用翻译）

@@ -12,10 +12,23 @@ class AddBillController extends GetxController {
   
   final TextEditingController amountController = TextEditingController();
   final TextEditingController categoryController = TextEditingController();
-  final TextEditingController accountController = TextEditingController();
   final TextEditingController noteController = TextEditingController();
   
   final canSave = false.obs;
+  
+  /// V1版本默认账户ID（单用户模式）
+  static const String defaultAccountId = 'default_account_v1';
+  
+  // 所有分类数据
+  final allCategories = <CategoryTableData>[].obs;
+  
+  // 当前显示的分类（根据类型过滤）
+  List<CategoryTableData> get currentCategories {
+    return allCategories
+        .where((category) => category.type == state.billType.value && category.deletedAt == null)
+        .toList()
+      ..sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
+  }
 
   @override
   void onInit() {
@@ -23,33 +36,58 @@ class AddBillController extends GetxController {
     // 监听输入变化，更新保存按钮状态
     amountController.addListener(_checkCanSave);
     categoryController.addListener(_checkCanSave);
-    accountController.addListener(_checkCanSave);
+    // 监听类型变化，清空已选分类
+    ever(state.billType, (_) {
+      state.categoryId.value = '';
+      categoryController.clear();
+    });
+    // 加载分类数据
+    loadCategories();
+  }
+  
+  /// 加载分类数据
+  Future<void> loadCategories() async {
+    try {
+      final categories = await database.select(database.categoryTable).get();
+      allCategories.value = categories;
+    } catch (e) {
+      Get.snackbar('error'.tr, '${'loadCategoriesFailed'.tr}：$e', snackPosition: SnackPosition.BOTTOM);
+    }
   }
 
   @override
   void onClose() {
     amountController.dispose();
     categoryController.dispose();
-    accountController.dispose();
     noteController.dispose();
     super.onClose();
   }
 
   void _checkCanSave() {
     final amount = amountController.text.trim();
-    final category = categoryController.text.trim();
-    final account = accountController.text.trim();
     
     canSave.value = amount.isNotEmpty &&
         double.tryParse(amount) != null &&
         double.parse(amount) > 0 &&
-        category.isNotEmpty &&
-        account.isNotEmpty;
+        state.categoryId.value.isNotEmpty;
   }
 
   /// 选择类型
   void selectType(int type) {
     state.billType.value = type;
+    // 切换类型时清空已选分类
+    state.categoryId.value = '';
+    categoryController.clear();
+  }
+  
+  /// 选择分类
+  void selectCategory(String categoryId) {
+    state.categoryId.value = categoryId;
+    final category = allCategories.firstWhereOrNull((c) => c.id == categoryId);
+    if (category != null) {
+      categoryController.text = category.name.tr; // 使用国际化key获取翻译
+    }
+    _checkCanSave();
   }
 
   /// 更新金额
@@ -60,12 +98,6 @@ class AddBillController extends GetxController {
   /// 更新分类
   void updateCategory(String value) {
     state.categoryId.value = value.trim();
-    _checkCanSave();
-  }
-
-  /// 更新账户
-  void updateAccount(String value) {
-    state.accountId.value = value.trim();
     _checkCanSave();
   }
 
@@ -121,7 +153,7 @@ class AddBillController extends GetxController {
         type: drift.Value(state.billType.value),
         amountMinor: drift.Value(amountMinor),
         categoryId: drift.Value(state.categoryId.value),
-        accountId: drift.Value(state.accountId.value),
+        accountId: drift.Value(defaultAccountId), // V1版本使用默认账户ID
         occurredAt: drift.Value(occurredAt.millisecondsSinceEpoch ~/ 1000),
         note: drift.Value(state.note.value.isEmpty ? null : state.note.value),
         createdAt: drift.Value(now.millisecondsSinceEpoch ~/ 1000),
@@ -132,9 +164,9 @@ class AddBillController extends GetxController {
       await database.into(database.billTable).insert(bill);
       
       Get.back();
-      Get.snackbar('成功', '账单已保存', snackPosition: SnackPosition.BOTTOM);
+      Get.snackbar('success'.tr, 'billSaved'.tr, snackPosition: SnackPosition.BOTTOM);
     } catch (e) {
-      Get.snackbar('错误', '保存失败：$e', snackPosition: SnackPosition.BOTTOM);
+      Get.snackbar('error'.tr, '${'saveFailed'.tr}：$e', snackPosition: SnackPosition.BOTTOM);
     }
   }
 }

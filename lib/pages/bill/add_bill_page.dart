@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:my_ai_pocket/core/theme/theme_helper.dart';
+import 'package:my_ai_pocket/core/utils/icon_helper.dart';
+import 'package:my_ai_pocket/core/utils/decimal_text_input_formatter.dart';
 import 'add_bill_controller.dart';
 
 /// 新增账单页面
@@ -11,12 +14,15 @@ class AddBillPage extends GetView<AddBillController> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('新增账单'),
+        title: Text('addBill'.tr),
         actions: [
           Obx(
             () => TextButton(
               onPressed: controller.canSave.value ? controller.saveBill : null,
-              child: const Text('保存'),
+              style: TextButton.styleFrom(
+                foregroundColor: Theme.of(context).appBarTheme.foregroundColor,
+              ),
+              child: Text('save'.tr),
             ),
           ),
         ],
@@ -28,13 +34,13 @@ class AddBillPage extends GetView<AddBillController> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // 类型选择
-              _buildSectionTitle('类型'),
+              _buildSectionTitle('type'.tr),
               const SizedBox(height: 8),
               Row(
                 children: [
                   Expanded(
                     child: _buildTypeButton(
-                      '支出',
+                      'expense'.tr,
                       0,
                       controller.state.billType.value == 0,
                     ),
@@ -42,7 +48,7 @@ class AddBillPage extends GetView<AddBillController> {
                   const SizedBox(width: 16),
                   Expanded(
                     child: _buildTypeButton(
-                      '收入',
+                      'income'.tr,
                       1,
                       controller.state.billType.value == 1,
                     ),
@@ -52,48 +58,31 @@ class AddBillPage extends GetView<AddBillController> {
               const SizedBox(height: 24),
               
               // 金额
-              _buildSectionTitle('金额'),
+              _buildSectionTitle('amount'.tr),
               const SizedBox(height: 8),
               TextField(
                 controller: controller.amountController,
                 keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                decoration: const InputDecoration(
-                  hintText: '请输入金额',
+                inputFormatters: [
+                  DecimalTextInputFormatter(maxDecimalPlaces: 2),
+                ],
+                decoration: InputDecoration(
+                  hintText: 'amountHint'.tr,
                   prefixText: '¥ ',
-                  border: OutlineInputBorder(),
+                  border: const OutlineInputBorder(),
                 ),
                 onChanged: (value) => controller.updateAmount(value),
               ),
               const SizedBox(height: 24),
               
               // 分类
-              _buildSectionTitle('分类'),
+              _buildSectionTitle('category'.tr),
               const SizedBox(height: 8),
-              TextField(
-                controller: controller.categoryController,
-                decoration: const InputDecoration(
-                  hintText: '请输入分类ID',
-                  border: OutlineInputBorder(),
-                ),
-                onChanged: (value) => controller.updateCategory(value),
-              ),
-              const SizedBox(height: 24),
-              
-              // 账户
-              _buildSectionTitle('账户'),
-              const SizedBox(height: 8),
-              TextField(
-                controller: controller.accountController,
-                decoration: const InputDecoration(
-                  hintText: '请输入账户ID',
-                  border: OutlineInputBorder(),
-                ),
-                onChanged: (value) => controller.updateAccount(value),
-              ),
+              Obx(() => _buildCategoryGrid(controller)),
               const SizedBox(height: 24),
               
               // 发生时间
-              _buildSectionTitle('发生时间'),
+              _buildSectionTitle('occurredTime'.tr),
               const SizedBox(height: 8),
               InkWell(
                 onTap: () => controller.selectDate(context),
@@ -119,14 +108,14 @@ class AddBillPage extends GetView<AddBillController> {
               const SizedBox(height: 24),
               
               // 备注
-              _buildSectionTitle('备注'),
+              _buildSectionTitle('note'.tr),
               const SizedBox(height: 8),
               TextField(
                 controller: controller.noteController,
                 maxLines: 3,
-                decoration: const InputDecoration(
-                  hintText: '请输入备注（可选）',
-                  border: OutlineInputBorder(),
+                decoration: InputDecoration(
+                  hintText: 'noteHint'.tr,
+                  border: const OutlineInputBorder(),
                 ),
                 onChanged: (value) => controller.updateNote(value),
               ),
@@ -154,13 +143,13 @@ class AddBillPage extends GetView<AddBillController> {
         padding: const EdgeInsets.symmetric(vertical: 16),
         decoration: BoxDecoration(
           color: isSelected
-              ? (type == 0 ? Colors.red.withOpacity(0.1) : Colors.green.withOpacity(0.1))
-              : Colors.grey.withOpacity(0.1),
+              ? (type == 0 ? ThemeHelper.errorColor : ThemeHelper.successColor)
+              : ThemeHelper.backgroundColor,
           border: Border.all(
             color: isSelected
                 ? (type == 0 ? Colors.red : Colors.green)
                 : Colors.grey,
-            width: isSelected ? 2 : 1,
+            width: 1,
           ),
           borderRadius: BorderRadius.circular(8),
         ),
@@ -170,13 +159,87 @@ class AddBillPage extends GetView<AddBillController> {
             style: TextStyle(
               fontSize: 16,
               fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-              color: isSelected
-                  ? (type == 0 ? Colors.red : Colors.green)
-                  : Colors.black,
+              color: isSelected ? Colors.white : ThemeHelper.textPrimaryColor
             ),
           ),
         ),
       ),
+    );
+  }
+
+  /// 构建分类网格
+  Widget _buildCategoryGrid(AddBillController controller) {
+    final categories = controller.currentCategories;
+    
+    if (categories.isEmpty) {
+      return Container(
+        padding: const EdgeInsets.all(32),
+        child: Center(
+          child: Text('noCategories'.tr, style: const TextStyle(color: Colors.grey)),
+        ),
+      );
+    }
+
+    return GridView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 4, // 每行4个
+        crossAxisSpacing: 12,
+        mainAxisSpacing: 12,
+        childAspectRatio: 0.85,
+      ),
+      itemCount: categories.length,
+      itemBuilder: (context, index) {
+        final category = categories[index];
+        
+        return Obx(() {
+          final isSelected = controller.state.categoryId.value == category.id;
+          
+          return InkWell(
+            onTap: () => controller.selectCategory(category.id),
+            borderRadius: BorderRadius.circular(12),
+            child: Container(
+              decoration: BoxDecoration(
+                color: isSelected
+                    ? (IconHelper.hexToColor(category.color).withAlpha(51))
+                    : Colors.transparent,
+                border: Border.all(
+                  color: isSelected
+                      ? IconHelper.hexToColor(category.color)
+                      : Colors.grey.withAlpha(76),
+                  width: isSelected ? 2 : 1,
+                ),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    IconHelper.getIconData(category.iconName),
+                    color: IconHelper.hexToColor(category.color),
+                    size: 32,
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    category.name.tr, // 使用国际化key获取翻译
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: isSelected
+                          ? IconHelper.hexToColor(category.color)
+                          : ThemeHelper.textPrimaryColor,
+                      fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                    ),
+                    textAlign: TextAlign.center,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
+            ),
+          );
+        });
+      },
     );
   }
 }

@@ -7,14 +7,29 @@ import 'core/routes/app_routes.dart';
 import 'core/theme/theme_controller.dart';
 import 'core/language/language_controller.dart';
 import 'core/database/app_database.dart';
+import 'core/database/services/user_config_service.dart';
 
-void main() {
-  // 初始化主题控制器
-  Get.put(ThemeController(), permanent: true);
-  // 初始化语言控制器
-  Get.put(LanguageController(), permanent: true);
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  
   // 初始化数据库（使用 permanent: true 确保数据库实例在整个应用生命周期中保持）
-  Get.put(AppDatabase(), permanent: true);
+  final database = AppDatabase();
+  Get.put(database, permanent: true);
+  
+  // 初始化主题控制器
+  final themeController = ThemeController();
+  Get.put(themeController, permanent: true);
+  
+  // 初始化语言控制器
+  final languageController = LanguageController();
+  Get.put(languageController, permanent: true);
+  
+  // 加载用户配置
+  final userConfigService = UserConfigService(database);
+  await userConfigService.loadUserConfig(
+    themeController: themeController,
+    languageController: languageController,
+  );
   
   runApp(const MyApp());
 }

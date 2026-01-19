@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'app_colors.dart';
 import 'theme_state.dart';
+import '../database/app_database.dart';
+import '../database/services/user_config_service.dart';
 
 /// 主题管理控制器
 class ThemeController extends GetxController {
   final ThemeState state = ThemeState();
+  UserConfigService? _userConfigService;
 
   /// 切换主题模式
   void toggleTheme() {
@@ -64,6 +67,22 @@ class ThemeController extends GetxController {
   /// 更新主题（通过 Obx 自动响应，此方法保留用于未来扩展）
   void _updateTheme() {
     // 主题变化会通过 Obx 自动响应，这里可以添加其他逻辑
+    // 保存配置到数据库
+    _saveThemeConfig();
+  }
+
+  /// 保存主题配置到数据库
+  void _saveThemeConfig() {
+    try {
+      if (_userConfigService == null) {
+        final database = Get.find<AppDatabase>();
+        _userConfigService = UserConfigService(database);
+      }
+      _userConfigService?.saveUserConfig(themeMode: state.themeMode.value);
+    } catch (e) {
+      // 忽略错误，避免影响应用运行
+      print('保存主题配置失败: $e');
+    }
   }
 
   /// 构建浅色主题
@@ -213,6 +232,14 @@ class ThemeController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    // 初始化用户配置服务
+    try {
+      final database = Get.find<AppDatabase>();
+      _userConfigService = UserConfigService(database);
+    } catch (e) {
+      // 如果数据库未初始化，忽略错误
+      print('初始化用户配置服务失败: $e');
+    }
     // 主题会在 main.dart 中通过 Obx 响应变化，这里不需要手动更新
   }
 }
