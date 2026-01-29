@@ -35,14 +35,17 @@ class AppTranslationsZh {
     'loadBillsFailed': '加载账单失败',
     // AddBillPage
     'addBill': '记一笔',
+    'editBill': '编辑账单',
     'type': '类型',
     'amountHint': '请输入金额',
     'occurredTime': '发生时间',
     'noteHint': '请输入备注（可选）',
     'noCategories': '暂无分类数据',
     'loadCategoriesFailed': '加载分类失败',
+    'loadBillFailed': '加载账单失败',
     'success': '成功',
     'billSaved': '账单已保存',
+    'billUpdated': '账单已更新',
     'saveFailed': '保存失败',
     // Categories - Expense
     'category.food': '餐饮',

@@ -100,7 +100,8 @@ class HomePage extends GetView<HomeController> {
         color: Colors.transparent,
         child: InkWell(
           onTap: () {
-            // 可以添加点击事件，比如查看详情或编辑
+            // 点击账单卡片跳转编辑
+            controller.editBill(bill.id);
           },
           borderRadius: BorderRadius.circular(12.r),
           child: Padding(

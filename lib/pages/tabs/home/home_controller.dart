@@ -61,6 +61,14 @@ class HomeController extends GetxController {
     });
   }
 
+  /// 跳转编辑账单
+  void editBill(String billId) {
+    Get.toNamed(AppRoutes.addBill, arguments: billId)?.then((_) {
+      // 返回后刷新列表
+      loadBills();
+    });
+  }
+
   /// 获取分类信息
   CategoryTableData? getCategory(String categoryId) {
     return state.categoryMap[categoryId];

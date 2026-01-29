@@ -35,14 +35,17 @@ class AppTranslationsEn {
     'loadBillsFailed': 'Failed to load bills',
     // AddBillPage
     'addBill': 'Add Bill',
+    'editBill': 'Edit Bill',
     'type': 'Type',
     'amountHint': 'Enter amount',
     'occurredTime': 'Occurred Time',
     'noteHint': 'Enter note (optional)',
     'noCategories': 'No categories available',
     'loadCategoriesFailed': 'Failed to load categories',
+    'loadBillFailed': 'Failed to load bill',
     'success': 'Success',
     'billSaved': 'Bill saved successfully',
+    'billUpdated': 'Bill updated successfully',
     'saveFailed': 'Save failed',
     // Categories - Expense
     'category.food': 'Food',

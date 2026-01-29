@@ -14,7 +14,9 @@ class AddBillPage extends GetView<AddBillController> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('addBill'.tr),
+        title: Obx(() => Text(
+          controller.isEditMode.value ? 'editBill'.tr : 'addBill'.tr
+        )),
         actions: [
           Obx(
             () => TextButton(

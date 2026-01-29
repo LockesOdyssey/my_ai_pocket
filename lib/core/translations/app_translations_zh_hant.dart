@@ -35,14 +35,17 @@ class AppTranslationsZhHant {
     'loadBillsFailed': '載入帳單失敗',
     // AddBillPage
     'addBill': '記一筆',
+    'editBill': '編輯帳單',
     'type': '類型',
     'amountHint': '請輸入金額',
     'occurredTime': '發生時間',
     'noteHint': '請輸入備註（可選）',
     'noCategories': '暫無分類資料',
     'loadCategoriesFailed': '載入分類失敗',
+    'loadBillFailed': '載入帳單失敗',
     'success': '成功',
     'billSaved': '帳單已儲存',
+    'billUpdated': '帳單已更新',
     'saveFailed': '儲存失敗',
     // Categories - Expense
     'category.food': '餐飲',
