@@ -33,6 +33,10 @@ class AppTranslationsZhHant {
     'yesterday': '昨天',
     'error': '錯誤',
     'loadBillsFailed': '載入帳單失敗',
+    'confirmDelete': '確認刪除',
+    'confirmDeleteBill': '確定要刪除此帳單嗎？',
+    'billDeleted': '帳單已刪除',
+    'deleteFailed': '刪除失敗',
     // AddBillPage
     'addBill': '記一筆',
     'editBill': '編輯帳單',

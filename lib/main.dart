@@ -8,6 +8,8 @@ import 'core/theme/theme_controller.dart';
 import 'core/language/language_controller.dart';
 import 'core/database/app_database.dart';
 import 'core/database/services/user_config_service.dart';
+import 'core/database/services/bill_service.dart';
+import 'core/database/services/category_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -15,6 +17,11 @@ void main() async {
   // 初始化数据库（使用 permanent: true 确保数据库实例在整个应用生命周期中保持）
   final database = AppDatabase();
   Get.put(database, permanent: true);
+  
+  // 初始化数据库服务类
+  Get.put(BillService(database), permanent: true);
+  Get.put(CategoryService(database), permanent: true);
+  Get.put(UserConfigService(database), permanent: true);
   
   // 初始化主题控制器
   final themeController = ThemeController();
@@ -25,7 +32,7 @@ void main() async {
   Get.put(languageController, permanent: true);
   
   // 加载用户配置
-  final userConfigService = UserConfigService(database);
+  final userConfigService = Get.find<UserConfigService>();
   await userConfigService.loadUserConfig(
     themeController: themeController,
     languageController: languageController,

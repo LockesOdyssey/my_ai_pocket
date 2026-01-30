@@ -33,6 +33,10 @@ class AppTranslationsEn {
     'yesterday': 'Yesterday',
     'error': 'Error',
     'loadBillsFailed': 'Failed to load bills',
+    'confirmDelete': 'Confirm Delete',
+    'confirmDeleteBill': 'Are you sure you want to delete this bill?',
+    'billDeleted': 'Bill deleted successfully',
+    'deleteFailed': 'Delete failed',
     // AddBillPage
     'addBill': 'Add Bill',
     'editBill': 'Edit Bill',

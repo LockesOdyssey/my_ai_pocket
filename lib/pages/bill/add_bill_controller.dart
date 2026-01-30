@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:my_ai_pocket/core/database/app_database.dart';
 import 'package:uuid/uuid.dart';
-import 'package:drift/drift.dart' as drift;
-import '../../core/database/app_database.dart';
+import '../../core/database/services/bill_service.dart';
+import '../../core/database/services/category_service.dart';
 import 'add_bill_state.dart';
 
 /// 新增账单控制器
 class AddBillController extends GetxController {
   final AddBillState state = AddBillState();
-  final AppDatabase database = Get.find<AppDatabase>();
+  final BillService billService = Get.find<BillService>();
+  final CategoryService categoryService = Get.find<CategoryService>();
   
   final TextEditingController amountController = TextEditingController();
   final TextEditingController categoryController = TextEditingController();
@@ -19,9 +21,6 @@ class AddBillController extends GetxController {
   // 编辑模式标识
   final isEditMode = false.obs;
   String? billId; // 编辑时的账单ID
-  
-  /// V1版本默认账户ID（单用户模式）
-  static const String defaultAccountId = 'default_account_v1';
   
   // 所有分类数据
   final allCategories = <CategoryTableData>[].obs;
@@ -66,7 +65,7 @@ class AddBillController extends GetxController {
   /// 加载分类数据
   Future<void> loadCategories() async {
     try {
-      final categories = await database.select(database.categoryTable).get();
+      final categories = await categoryService.getAllCategories();
       allCategories.value = categories;
     } catch (e) {
       Get.snackbar('error'.tr, '${'loadCategoriesFailed'.tr}：$e', snackPosition: SnackPosition.BOTTOM);
@@ -76,9 +75,12 @@ class AddBillController extends GetxController {
   /// 加载账单数据（编辑模式）
   Future<void> loadBillData(String id) async {
     try {
-      final bill = await (database.select(database.billTable)
-        ..where((tbl) => tbl.id.equals(id)))
-        .getSingle();
+      final bill = await billService.getBillById(id);
+      
+      if (bill == null) {
+        Get.snackbar('error'.tr, 'loadBillFailed'.tr, snackPosition: SnackPosition.BOTTOM);
+        return;
+      }
       
       // 填充表单数据
       state.billType.value = bill.type;
@@ -193,39 +195,31 @@ class AddBillController extends GetxController {
     try {
       final amount = double.parse(amountController.text.trim());
       final amountMinor = (amount * 100).toInt();
-      final now = DateTime.now();
-      final occurredAt = state.occurredAt.value;
+      final occurredAt = state.occurredAt.value.millisecondsSinceEpoch ~/ 1000;
+      final note = state.note.value.isEmpty ? null : state.note.value;
       
       if (isEditMode.value && billId != null) {
         // 编辑模式：更新
-        await (database.update(database.billTable)
-          ..where((tbl) => tbl.id.equals(billId!)))
-          .write(BillTableCompanion(
-            type: drift.Value(state.billType.value),
-            amountMinor: drift.Value(amountMinor),
-            categoryId: drift.Value(state.categoryId.value),
-            occurredAt: drift.Value(occurredAt.millisecondsSinceEpoch ~/ 1000),
-            note: drift.Value(state.note.value.isEmpty ? null : state.note.value),
-            updatedAt: drift.Value(now.millisecondsSinceEpoch ~/ 1000),
-          ));
+        await billService.updateBill(
+          id: billId!,
+          type: state.billType.value,
+          amountMinor: amountMinor,
+          categoryId: state.categoryId.value,
+          occurredAt: occurredAt,
+          note: note,
+        );
         Get.back();
         Get.snackbar('success'.tr, 'billUpdated'.tr, snackPosition: SnackPosition.BOTTOM);
       } else {
-        // 新增模式：插入
-        final bill = BillTableCompanion(
-          id: drift.Value(const Uuid().v4()),
-          type: drift.Value(state.billType.value),
-          amountMinor: drift.Value(amountMinor),
-          categoryId: drift.Value(state.categoryId.value),
-          accountId: drift.Value(defaultAccountId), // V1版本使用默认账户ID
-          occurredAt: drift.Value(occurredAt.millisecondsSinceEpoch ~/ 1000),
-          note: drift.Value(state.note.value.isEmpty ? null : state.note.value),
-          createdAt: drift.Value(now.millisecondsSinceEpoch ~/ 1000),
-          updatedAt: drift.Value(now.millisecondsSinceEpoch ~/ 1000),
-          deletedAt: const drift.Value(null),
+        // 新增模式：创建
+        await billService.createBill(
+          id: const Uuid().v4(),
+          type: state.billType.value,
+          amountMinor: amountMinor,
+          categoryId: state.categoryId.value,
+          occurredAt: occurredAt,
+          note: note,
         );
-        
-        await database.into(database.billTable).insert(bill);
         Get.back();
         Get.snackbar('success'.tr, 'billSaved'.tr, snackPosition: SnackPosition.BOTTOM);
       }

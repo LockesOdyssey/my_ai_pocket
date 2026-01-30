@@ -33,6 +33,10 @@ class AppTranslationsZh {
     'yesterday': '昨天',
     'error': '错误',
     'loadBillsFailed': '加载账单失败',
+    'confirmDelete': '确认删除',
+    'confirmDeleteBill': '确定要删除此账单吗？',
+    'billDeleted': '账单已删除',
+    'deleteFailed': '删除失败',
     // AddBillPage
     'addBill': '记一笔',
     'editBill': '编辑账单',
