@@ -4,6 +4,7 @@ import 'package:my_ai_pocket/core/routes/app_routes.dart';
 import 'package:my_ai_pocket/core/database/app_database.dart';
 import 'home_state.dart';
 
+// flutter pub run build_runner build --delete-conflicting-outputs
 /// 首页控制器
 class HomeController extends GetxController {
   final HomeState state = HomeState();
