@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:my_ai_pocket/core/theme/theme_helper.dart';
 import 'package:my_ai_pocket/core/utils/icon_helper.dart';
 import 'package:my_ai_pocket/core/database/app_database.dart';
+import 'package:my_ai_pocket/pages/widget/empty/empty_widget.dart';
 import 'home_controller.dart';
 
 /// 首页
@@ -25,25 +26,9 @@ class HomePage extends GetView<HomeController> {
             }
             
             if (controller.state.bills.isEmpty) {
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.receipt_long,
-                      size: 64,
-                      color: ThemeHelper.textTertiaryColor,
-                    ),
-                    SizedBox(height: 16.h),
-                    Text(
-                      'noBills'.tr,
-                      style: TextStyle(
-                        fontSize: 16.sp,
-                        color: ThemeHelper.textSecondaryColor,
-                      ),
-                    ),
-                  ],
-                ),
+              return EmptyWidget(
+                icon: Icons.receipt_long,
+                text: 'noBills'.tr,
               );
             }
             
@@ -100,7 +85,12 @@ class HomePage extends GetView<HomeController> {
         color: Colors.transparent,
         child: InkWell(
           onTap: () {
-            // 可以添加点击事件，比如查看详情或编辑
+            // 点击账单卡片跳转编辑
+            controller.editBill(bill.id);
+          },
+          onLongPress: () {
+            // 长按账单卡片显示删除确认对话框
+            controller.showDeleteConfirmDialog(bill.id);
           },
           borderRadius: BorderRadius.circular(12.r),
           child: Padding(

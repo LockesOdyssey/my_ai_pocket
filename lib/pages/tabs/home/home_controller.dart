@@ -1,14 +1,17 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:drift/drift.dart';
-import 'package:my_ai_pocket/core/routes/app_routes.dart';
 import 'package:my_ai_pocket/core/database/app_database.dart';
+import 'package:my_ai_pocket/core/routes/app_routes.dart';
+import 'package:my_ai_pocket/core/database/services/bill_service.dart';
+import 'package:my_ai_pocket/core/database/services/category_service.dart';
 import 'home_state.dart';
 
 // flutter pub run build_runner build --delete-conflicting-outputs
 /// 首页控制器
 class HomeController extends GetxController {
   final HomeState state = HomeState();
-  final AppDatabase database = Get.find<AppDatabase>();
+  final BillService billService = Get.find<BillService>();
+  final CategoryService categoryService = Get.find<CategoryService>();
 
   @override
   void onInit() {
@@ -34,18 +37,11 @@ class HomeController extends GetxController {
     try {
       state.isLoading.value = true;
       
-      // 加载分类数据
-      final categories = await database.select(database.categoryTable).get();
-      state.categoryMap.value = {
-        for (var category in categories) category.id: category
-      };
+      // 使用服务类加载分类数据
+      state.categoryMap.value = await categoryService.getCategoryMap();
       
-      // 加载账单数据（排除已删除的，按发生时间倒序）
-      final bills = await (database.select(database.billTable)
-        ..where((tbl) => tbl.deletedAt.isNull())
-        ..orderBy([(tbl) => OrderingTerm.desc(tbl.occurredAt)]))
-        .get();
-      
+      // 使用服务类加载账单数据（排除已删除的，按发生时间倒序）
+      final bills = await billService.getAllBills();
       state.bills.value = bills;
     } catch (e) {
       Get.snackbar('error'.tr, '${'loadBillsFailed'.tr}：$e', snackPosition: SnackPosition.BOTTOM);
@@ -60,6 +56,56 @@ class HomeController extends GetxController {
       // 返回后刷新列表
       loadBills();
     });
+  }
+
+  /// 跳转编辑账单
+  void editBill(String billId) {
+    Get.toNamed(AppRoutes.addBill, arguments: billId)?.then((_) {
+      // 返回后刷新列表
+      loadBills();
+    });
+  }
+
+  /// 删除账单（软删除）
+  Future<void> deleteBill(String billId) async {
+    try {
+      // 使用服务类软删除账单
+      await billService.softDeleteBill(billId);
+      
+      // 刷新列表
+      await loadBills();
+      
+      Get.snackbar('success'.tr, 'billDeleted'.tr, snackPosition: SnackPosition.BOTTOM);
+    } catch (e) {
+      Get.snackbar('error'.tr, '${'deleteFailed'.tr}：$e', snackPosition: SnackPosition.BOTTOM);
+    }
+  }
+
+  /// 显示删除确认对话框
+  Future<void> showDeleteConfirmDialog(String billId) async {
+    final result = await Get.dialog<bool>(
+      AlertDialog(
+        title: Text('confirmDelete'.tr),
+        content: Text('confirmDeleteBill'.tr),
+        actions: [
+          TextButton(
+            onPressed: () => Get.back(result: false),
+            child: Text('cancel'.tr),
+          ),
+          TextButton(
+            onPressed: () => Get.back(result: true),
+            style: TextButton.styleFrom(
+              foregroundColor: Colors.red,
+            ),
+            child: Text('delete'.tr),
+          ),
+        ],
+      ),
+    );
+    
+    if (result == true) {
+      await deleteBill(billId);
+    }
   }
 
   /// 获取分类信息
