@@ -18,112 +18,156 @@ class AddBillPage extends GetView<AddBillController> {
           controller.isEditMode.value ? 'editBill'.tr : 'addBill'.tr
         )),
         actions: [
+          // 编辑模式下显示删除按钮
           Obx(
-            () => TextButton(
-              onPressed: controller.canSave.value ? controller.saveBill : null,
-              style: TextButton.styleFrom(
-                foregroundColor: Theme.of(context).appBarTheme.foregroundColor,
-              ),
-              child: Text('save'.tr),
-            ),
+            () => controller.isEditMode.value
+                ? IconButton(
+                    icon: const Icon(Icons.delete_outline),
+                    onPressed: controller.showDeleteConfirmDialog,
+                    tooltip: 'delete'.tr,
+                  )
+                : const SizedBox(width: 0),
           ),
         ],
       ),
-      body: Obx(
-        () => SingleChildScrollView(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // 类型选择
-              _buildSectionTitle('type'.tr),
-              const SizedBox(height: 8),
-              Row(
-                children: [
-                  Expanded(
-                    child: _buildTypeButton(
-                      'expense'.tr,
-                      0,
-                      controller.state.billType.value == 0,
+      body: Column(
+        children: [
+          Expanded(
+            child: Obx(
+              () => SingleChildScrollView(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // 类型选择
+                    _buildSectionTitle('type'.tr),
+                    const SizedBox(height: 8),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: _buildTypeButton(
+                            'expense'.tr,
+                            0,
+                            controller.state.billType.value == 0,
+                          ),
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: _buildTypeButton(
+                            'income'.tr,
+                            1,
+                            controller.state.billType.value == 1,
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: _buildTypeButton(
-                      'income'.tr,
-                      1,
-                      controller.state.billType.value == 1,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 24),
-              
-              // 金额
-              _buildSectionTitle('amount'.tr),
-              const SizedBox(height: 8),
-              TextField(
-                controller: controller.amountController,
-                keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                inputFormatters: [
-                  DecimalTextInputFormatter(maxDecimalPlaces: 2),
-                ],
-                decoration: InputDecoration(
-                  hintText: 'amountHint'.tr,
-                  prefixText: '¥ ',
-                  border: const OutlineInputBorder(),
-                ),
-                onChanged: (value) => controller.updateAmount(value),
-              ),
-              const SizedBox(height: 24),
-              
-              // 分类
-              _buildSectionTitle('category'.tr),
-              const SizedBox(height: 8),
-              Obx(() => _buildCategoryGrid(controller)),
-              const SizedBox(height: 24),
-              
-              // 发生时间
-              _buildSectionTitle('occurredTime'.tr),
-              const SizedBox(height: 8),
-              InkWell(
-                onTap: () => controller.selectDate(context),
-                child: Container(
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey),
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        DateFormat('yyyy-MM-dd HH:mm')
-                            .format(controller.state.occurredAt.value),
-                        style: const TextStyle(fontSize: 16),
+                    const SizedBox(height: 24),
+                    
+                    // 金额
+                    _buildSectionTitle('amount'.tr),
+                    const SizedBox(height: 8),
+                    TextField(
+                      controller: controller.amountController,
+                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                      inputFormatters: [
+                        DecimalTextInputFormatter(maxDecimalPlaces: 2),
+                      ],
+                      decoration: InputDecoration(
+                        hintText: 'amountHint'.tr,
+                        prefixText: '¥ ',
+                        border: const OutlineInputBorder(),
                       ),
-                      const Icon(Icons.calendar_today),
-                    ],
+                      onChanged: (value) => controller.updateAmount(value),
+                    ),
+                    const SizedBox(height: 24),
+                    
+                    // 分类
+                    _buildSectionTitle('category'.tr),
+                    const SizedBox(height: 8),
+                    Obx(() => _buildCategoryGrid(controller)),
+                    const SizedBox(height: 24),
+                    
+                    // 发生时间
+                    _buildSectionTitle('occurredTime'.tr),
+                    const SizedBox(height: 8),
+                    InkWell(
+                      onTap: () => controller.selectDate(context),
+                      child: Container(
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.grey),
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              DateFormat('yyyy-MM-dd HH:mm')
+                                  .format(controller.state.occurredAt.value),
+                              style: const TextStyle(fontSize: 16),
+                            ),
+                            const Icon(Icons.calendar_today),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                    
+                    // 备注
+                    _buildSectionTitle('note'.tr),
+                    const SizedBox(height: 8),
+                    TextField(
+                      controller: controller.noteController,
+                      maxLines: 3,
+                      decoration: InputDecoration(
+                        hintText: 'noteHint'.tr,
+                        border: const OutlineInputBorder(),
+                      ),
+                      onChanged: (value) => controller.updateNote(value),
+                    ),
+                    const SizedBox(height: 24),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          // 底部保存按钮
+          Obx(
+            () => Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: ThemeHelper.backgroundColor,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.05),
+                    blurRadius: 4,
+                    offset: const Offset(0, -2),
+                  ),
+                ],
+              ),
+              child: ElevatedButton(
+                onPressed: controller.canSave.value ? controller.saveBill : null,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: ThemeHelper.primaryColor,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  elevation: 0,
+                ),
+                child: Text(
+                  'save'.tr,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
               ),
-              const SizedBox(height: 24),
-              
-              // 备注
-              _buildSectionTitle('note'.tr),
-              const SizedBox(height: 8),
-              TextField(
-                controller: controller.noteController,
-                maxLines: 3,
-                decoration: InputDecoration(
-                  hintText: 'noteHint'.tr,
-                  border: const OutlineInputBorder(),
-                ),
-                onChanged: (value) => controller.updateNote(value),
-              ),
-            ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }

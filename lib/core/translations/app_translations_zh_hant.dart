@@ -70,5 +70,8 @@ class AppTranslationsZhHant {
     'category.finance': '理財',
     'category.redPacket': '紅包',
     'category.refund': '退款',
+    // Statistics
+    'statistics': '統計',
+    'total': '總計',
   };
 }

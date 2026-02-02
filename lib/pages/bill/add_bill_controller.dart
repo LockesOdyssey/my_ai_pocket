@@ -227,4 +227,46 @@ class AddBillController extends GetxController {
       Get.snackbar('error'.tr, '${'saveFailed'.tr}：$e', snackPosition: SnackPosition.BOTTOM);
     }
   }
+
+  /// 显示删除确认对话框
+  Future<void> showDeleteConfirmDialog() async {
+    if (billId == null) return;
+    
+    final result = await Get.dialog<bool>(
+      AlertDialog(
+        title: Text('confirmDelete'.tr),
+        content: Text('confirmDeleteBill'.tr),
+        actions: [
+          TextButton(
+            onPressed: () => Get.back(result: false),
+            child: Text('cancel'.tr),
+          ),
+          TextButton(
+            onPressed: () => Get.back(result: true),
+            style: TextButton.styleFrom(
+              foregroundColor: Colors.red,
+            ),
+            child: Text('delete'.tr),
+          ),
+        ],
+      ),
+    );
+    
+    if (result == true) {
+      await deleteBill();
+    }
+  }
+
+  /// 删除账单（软删除）
+  Future<void> deleteBill() async {
+    if (billId == null) return;
+    
+    try {
+      await billService.softDeleteBill(billId!);
+      Get.back();
+      Get.snackbar('success'.tr, 'billDeleted'.tr, snackPosition: SnackPosition.BOTTOM);
+    } catch (e) {
+      Get.snackbar('error'.tr, '${'deleteFailed'.tr}：$e', snackPosition: SnackPosition.BOTTOM);
+    }
+  }
 }

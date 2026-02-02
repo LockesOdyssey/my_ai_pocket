@@ -8,6 +8,7 @@ import '../../pages/tabs/home/home_page.dart';
 import '../../pages/tabs/home/home_controller.dart';
 import '../../pages/tabs/settings/settings_page.dart';
 import '../../pages/tabs/settings/settings_controller.dart';
+import '../../pages/tabs/statistics/statistics_controller.dart';
 import '../../pages/bill/add_bill_page.dart';
 import '../../pages/bill/add_bill_controller.dart';
 
@@ -31,6 +32,9 @@ class AppPages {
         // 先注册子页面控制器（使用 put 确保立即创建，因为 MainController 会立即使用它们）
         if (!Get.isRegistered<HomeController>()) {
           Get.put<HomeController>(HomeController(), permanent: false);
+        }
+        if (!Get.isRegistered<StatisticsController>()) {
+          Get.put<StatisticsController>(StatisticsController(), permanent: false);
         }
         if (!Get.isRegistered<SettingsController>()) {
           Get.put<SettingsController>(SettingsController(), permanent: false);

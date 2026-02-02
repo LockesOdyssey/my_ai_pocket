@@ -28,6 +28,10 @@ class MainPage extends GetView<MainController> {
               label: 'home'.tr,
             ),
             BottomNavigationBarItem(
+              icon: const Icon(Icons.bar_chart),
+              label: 'statistics'.tr,
+            ),
+            BottomNavigationBarItem(
               icon: const Icon(Icons.settings),
               label: 'settings'.tr,
             ),

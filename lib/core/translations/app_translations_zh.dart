@@ -70,5 +70,8 @@ class AppTranslationsZh {
     'category.finance': '理财',
     'category.redPacket': '红包',
     'category.refund': '退款',
+    // Statistics
+    'statistics': '统计',
+    'total': '总计',
   };
 }

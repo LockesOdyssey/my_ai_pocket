@@ -70,5 +70,8 @@ class AppTranslationsEn {
     'category.finance': 'Finance',
     'category.redPacket': 'Red Packet',
     'category.refund': 'Refund',
+    // Statistics
+    'statistics': 'Statistics',
+    'total': 'Total',
   };
 }
